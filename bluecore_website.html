@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>BlueCore — Ocean Desalination &amp; Upcycling Pods</title>
+<style>
+  :root{
+    --navy:#0B2E33;
+    --navy-deep:#08262A;
+    --teal:#1E8A82;
+    --seafoam:#8FD9C4;
+    --gold:#E8B75D;
+    --gold-deep:#C98F3A;
+    --off:#F2F7F5;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;background:var(--navy-deep);color:var(--off);
+    font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,Arial,sans-serif;}
+
+  header{
+    position:fixed;top:0;left:0;right:0;z-index:10;
+    display:flex;align-items:center;justify-content:space-between;
+    padding:18px 32px;
+    background:linear-gradient(to bottom, rgba(8,38,42,0.9), rgba(8,38,42,0));
+    pointer-events:none;
+  }
+  header .brand{display:flex;align-items:center;gap:10px;pointer-events:auto;}
+  header .brand svg{width:34px;height:34px;}
+  header .brand span{font-weight:700;letter-spacing:3px;font-size:16px;}
+  header nav{display:flex;gap:26px;pointer-events:auto;}
+  header nav a{color:var(--off);opacity:0.75;text-decoration:none;font-size:14px;letter-spacing:0.5px;}
+  header nav a:hover{opacity:1;}
+
+  .hero{
+    position:relative;
+    height:100vh;
+    width:100%;
+    overflow:hidden;
+  }
+  #canvas-wrap{position:absolute;inset:0;}
+  canvas{display:block;}
+
+  .hero-copy{
+    position:absolute;
+    left:32px; bottom:110px;
+    max-width:480px;
+    z-index:5;
+    pointer-events:none;
+  }
+  .eyebrow{
+    font-size:12px;letter-spacing:3px;color:var(--gold);
+    text-transform:uppercase;margin-bottom:14px;font-weight:600;
+  }
+  h1{
+    font-size:clamp(28px,4.2vw,46px);
+    line-height:1.08;
+    margin:0 0 14px 0;
+    font-weight:700;
+    letter-spacing:-0.5px;
+  }
+  .hero-copy p{
+    font-size:15px;line-height:1.6;opacity:0.8;margin:0;max-width:420px;
+  }
+
+  .hint{
+    position:absolute; right:32px; bottom:36px; z-index:5;
+    font-size:12px; opacity:0.55; letter-spacing:0.5px; text-align:right;
+    max-width:220px;
+  }
+
+  #part-label{
+    position:absolute; left:32px; top:96px; z-index:5;
+    font-size:13px; letter-spacing:0.3px;
+    background:rgba(11,46,51,0.55);
+    border:1px solid rgba(143,217,196,0.25);
+    padding:10px 14px; border-radius:6px;
+    max-width:360px; min-height:18px;
+    backdrop-filter:blur(4px);
+    transition:opacity 0.2s ease;
+  }
+
+  section.info{
+    padding:70px 32px 90px;
+    max-width:900px;
+    margin:0 auto;
+  }
+  section.info h2{
+    font-size:26px; margin-bottom:8px; letter-spacing:-0.3px;
+  }
+  section.info .sub{
+    color:var(--seafoam); font-size:13px; letter-spacing:2px; text-transform:uppercase;
+    margin-bottom:30px; font-weight:600;
+  }
+  .grid{
+    display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:22px;
+  }
+  .card{
+    background:rgba(255,255,255,0.03);
+    border:1px solid rgba(143,217,196,0.15);
+    border-radius:10px;
+    padding:20px;
+  }
+  .card .num{
+    color:var(--gold); font-weight:700; font-size:13px; letter-spacing:1px; margin-bottom:8px;
+  }
+  .card h3{margin:0 0 8px; font-size:16px;}
+  .card p{margin:0; font-size:13.5px; line-height:1.55; opacity:0.75;}
+
+  footer{
+    text-align:center; padding:30px; font-size:12px; opacity:0.4; letter-spacing:1px;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand">
+    <svg viewBox="0 0 640 640" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="podGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stop-color="#8FD9C4"/>
+          <stop offset="55%" stop-color="#1E8A82"/>
+          <stop offset="100%" stop-color="#0B4A48"/>
+        </linearGradient>
+        <linearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#E8B75D"/>
+          <stop offset="100%" stop-color="#C98F3A"/>
+        </linearGradient>
+      </defs>
+      <g fill="none" stroke="url(#ringGrad)" stroke-width="14" stroke-linecap="round">
+        <path d="M 320 60 A 260 260 0 0 1 546 190" />
+        <path d="M 570 250 A 260 260 0 0 1 500 490" />
+        <path d="M 450 540 A 260 260 0 0 1 190 540" />
+      </g>
+      <path d="M 190 540 L 168 520 L 172 552 Z" fill="#E8B75D"/>
+      <path d="M 320 150 C 400 250, 452 320, 452 388 C 452 456, 396 500, 320 500
+               C 244 500, 188 456, 188 388 C 188 320, 240 250, 320 150 Z" fill="url(#podGrad)"/>
+      <g fill="none" stroke="#F2F7F5" stroke-width="10" stroke-linecap="round" opacity="0.9">
+        <path d="M 226 372 C 256 352, 286 392, 316 372 C 346 352, 376 392, 406 372"/>
+        <path d="M 232 414 C 262 394, 292 434, 322 414 C 352 394, 382 434, 408 414"/>
+      </g>
+      <circle cx="320" cy="196" r="14" fill="#F2F7F5"/>
+    </svg>
+    <span>BLUECORE</span>
+  </div>
+  <nav>
+    <a href="#model">The Pod</a>
+    <a href="#system">How It Works</a>
+  </nav>
+</header>
+
+<section class="hero">
+  <div id="canvas-wrap"></div>
+
+  <div id="part-label"></div>
+
+  <div class="hero-copy">
+    <div class="eyebrow">Ocean &amp; River Desalination</div>
+    <h1>Fresh water in. Waste out. Nothing wasted.</h1>
+    <p>BlueCore pods desalinate seawater and river water in place, then hand off every gram of brine and debris they collect for upcycling — turning purification waste into a second revenue stream.</p>
+  </div>
+
+  <div class="hint">Drag to rotate · Scroll to zoom<br/>Hover the glowing markers</div>
+</section>
+
+<section class="info" id="system">
+  <div class="sub">How the pod works</div>
+  <h2>Six stages, one closed loop</h2>
+  <div class="grid" id="card-grid"></div>
+</section>
+
+<footer>BLUECORE — DESALINATE. PURIFY. UPCYCLE.</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r150/three.min.js"></script>
+<script>
+const markerData = [
+  { pos: [0, 1.65, 0], title: "Sensor Dome", text: "Monitors salinity, flow rate and water quality in real time." },
+  { pos: [2.6, 0.1, 0], title: "Solar Collar", text: "Powers the pod and keeps it buoyant right at the waterline." },
+  { pos: [2.0, -1.8, 0], title: "Membrane Core", text: "Reverse-osmosis stack that desalinates the intake water." },
+  { pos: [3.6, 1.0, 0], title: "Outflow Pipe", text: "Delivers purified fresh water to shore or storage." },
+  { pos: [0.6, -5.6, 0], title: "Waste Hopper", text: "Concentrates brine and collected debris for pickup." },
+  { pos: [5.2, 1.0, 3.4], title: "Collection Dock", text: "BlueCore retrieves the waste here and ships it out for upcycling." },
+];
+
+// populate info cards from the same data, so copy never drifts from the model
+const grid = document.getElementById('card-grid');
+markerData.forEach((m, i) => {
+  const card = document.createElement('div');
+  card.className = 'card';
+  card.innerHTML = `<div class="num">0${i+1}</div><h3>${m.title}</h3><p>${m.text}</p>`;
+  grid.appendChild(card);
+});
+
+const wrap = document.getElementById('canvas-wrap');
+const labelEl = document.getElementById('part-label');
+
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x0b2e33);
+scene.fog = new THREE.Fog(0x0b2e33, 14, 36);
+
+const camera = new THREE.PerspectiveCamera(42, wrap.clientWidth / wrap.clientHeight, 0.1, 100);
+
+const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+renderer.setSize(wrap.clientWidth, wrap.clientHeight);
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+wrap.appendChild(renderer.domElement);
+
+const hemi = new THREE.HemisphereLight(0xbfe8dc, 0x0b2e33, 1.1);
+scene.add(hemi);
+const key = new THREE.DirectionalLight(0xffffff, 1.1);
+key.position.set(6, 10, 4);
+scene.add(key);
+const rim = new THREE.DirectionalLight(0xe8b75d, 0.5);
+rim.position.set(-6, 3, -6);
+scene.add(rim);
+
+// Ocean
+const waterGeo = new THREE.PlaneGeometry(70, 70, 70, 70);
+const waterMat = new THREE.MeshStandardMaterial({
+  color: 0x0f5f66, transparent: true, opacity: 0.55,
+  roughness: 0.35, metalness: 0.1, side: THREE.DoubleSide,
+});
+const water = new THREE.Mesh(waterGeo, waterMat);
+water.rotation.x = -Math.PI / 2;
+scene.add(water);
+const waterPos = waterGeo.attributes.position;
+
+const pod = new THREE.Group();
+scene.add(pod);
+
+const hullMat = new THREE.MeshStandardMaterial({ color: 0x1e8a82, roughness: 0.35, metalness: 0.4 });
+const glassMat = new THREE.MeshStandardMaterial({ color: 0x8fd9c4, transparent: true, opacity: 0.35, roughness: 0.1, metalness: 0.1 });
+const goldMat = new THREE.MeshStandardMaterial({ color: 0xe8b75d, roughness: 0.4, metalness: 0.6 });
+const darkMat = new THREE.MeshStandardMaterial({ color: 0x0b2e33, roughness: 0.6, metalness: 0.3 });
+const whiteMat = new THREE.MeshStandardMaterial({ color: 0xf2f7f5, roughness: 0.3, metalness: 0.2 });
+
+const collar = new THREE.Mesh(new THREE.TorusGeometry(2.6, 0.22, 16, 48), goldMat);
+collar.rotation.x = Math.PI / 2;
+collar.position.y = 0.1;
+pod.add(collar);
+
+const dome = new THREE.Mesh(new THREE.SphereGeometry(1.5, 32, 16, 0, Math.PI * 2, 0, Math.PI / 2), glassMat);
+dome.position.y = 0.15;
+pod.add(dome);
+
+const grid3d = new THREE.Mesh(new THREE.TorusGeometry(1.5, 0.05, 8, 32), darkMat);
+grid3d.rotation.x = Math.PI / 2;
+grid3d.position.y = 0.15;
+pod.add(grid3d);
+
+const bodyCyl = new THREE.Mesh(new THREE.CylinderGeometry(1.9, 1.9, 3.4, 32), hullMat);
+bodyCyl.position.y = -2.0;
+pod.add(bodyCyl);
+const bodyCapTop = new THREE.Mesh(new THREE.SphereGeometry(1.9, 32, 16), hullMat);
+bodyCapTop.position.y = -0.3;
+pod.add(bodyCapTop);
+const bodyCapBottom = new THREE.Mesh(new THREE.SphereGeometry(1.9, 32, 16), hullMat);
+bodyCapBottom.position.y = -3.7;
+pod.add(bodyCapBottom);
+
+for (let i = 0; i < 4; i++) {
+  const band = new THREE.Mesh(new THREE.TorusGeometry(1.95, 0.08, 8, 32), whiteMat);
+  band.rotation.x = Math.PI / 2;
+  band.position.y = -1.0 - i * 0.7;
+  pod.add(band);
+}
+
+const funnel = new THREE.Mesh(new THREE.CylinderGeometry(1.9, 0.6, 1.4, 32, 1, true), darkMat);
+funnel.material.side = THREE.DoubleSide;
+funnel.position.y = -4.6;
+pod.add(funnel);
+
+const hopper = new THREE.Mesh(new THREE.CylinderGeometry(0.6, 0.6, 1.0, 24), goldMat);
+hopper.position.y = -5.6;
+pod.add(hopper);
+
+const outflowCurve = new THREE.CatmullRomCurve3([
+  new THREE.Vector3(1.9, -2.4, 0),
+  new THREE.Vector3(3.0, -1.6, 0),
+  new THREE.Vector3(3.6, 0.3, 0),
+  new THREE.Vector3(3.4, 1.0, 0),
+]);
+const pipe = new THREE.Mesh(new THREE.TubeGeometry(outflowCurve, 40, 0.16, 12, false), whiteMat);
+pod.add(pipe);
+
+const dockGroup = new THREE.Group();
+dockGroup.position.set(5.2, 0, 3.4);
+pod.add(dockGroup);
+
+const buoyHull = new THREE.Mesh(new THREE.CylinderGeometry(1.1, 1.1, 0.7, 24), goldMat);
+buoyHull.position.y = 0.05;
+dockGroup.add(buoyHull);
+
+const crate = new THREE.Mesh(new THREE.BoxGeometry(1.1, 0.7, 1.1), new THREE.MeshStandardMaterial({ color: 0xc98f3a, roughness: 0.7 }));
+crate.position.y = 0.75;
+dockGroup.add(crate);
+
+const tetherCurve = new THREE.CatmullRomCurve3([
+  new THREE.Vector3(0.6, -5.4, 0),
+  new THREE.Vector3(2.6, -3.5, 1.5),
+  new THREE.Vector3(4.4, -1.0, 3.0),
+  new THREE.Vector3(5.2, 0.0, 3.4),
+]);
+const tether = new THREE.Mesh(new THREE.TubeGeometry(tetherCurve, 40, 0.06, 8, false), darkMat);
+pod.add(tether);
+
+const anchorMat = new THREE.LineBasicMaterial({ color: 0x8fd9c4, transparent: true, opacity: 0.5 });
+const anchorGeo = new THREE.BufferGeometry().setFromPoints([
+  new THREE.Vector3(0, -5.9, 0), new THREE.Vector3(-1.5, -9, 1.5),
+]);
+pod.add(new THREE.Line(anchorGeo, anchorMat));
+
+const markers = [];
+markerData.forEach((m) => {
+  const marker = new THREE.Mesh(
+    new THREE.SphereGeometry(0.14, 16, 16),
+    new THREE.MeshStandardMaterial({ color: 0xf2f7f5, emissive: 0xe8b75d, emissiveIntensity: 0.4 })
+  );
+  marker.position.set(m.pos[0], m.pos[1], m.pos[2]);
+  marker.userData = m;
+  pod.add(marker);
+  markers.push(marker);
+});
+
+const raycaster = new THREE.Raycaster();
+const mouse = new THREE.Vector2();
+function onPointerMove(e) {
+  const rect = renderer.domElement.getBoundingClientRect();
+  mouse.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+  mouse.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+  raycaster.setFromCamera(mouse, camera);
+  const hits = raycaster.intersectObjects(markers);
+  if (hits.length > 0) {
+    const d = hits[0].object.userData;
+    labelEl.textContent = `${d.title} — ${d.text}`;
+    labelEl.style.opacity = 1;
+    renderer.domElement.style.cursor = 'pointer';
+  } else {
+    renderer.domElement.style.cursor = 'grab';
+  }
+}
+renderer.domElement.addEventListener('pointermove', onPointerMove);
+
+let isDragging = false, prevX = 0, prevY = 0;
+let theta = 0.9, phi = 1.0, radius = 15;
+
+function updateCamera() {
+  camera.position.x = radius * Math.sin(phi) * Math.sin(theta);
+  camera.position.z = radius * Math.sin(phi) * Math.cos(theta);
+  camera.position.y = radius * Math.cos(phi);
+  camera.lookAt(0, -1.5, 0);
+}
+updateCamera();
+
+renderer.domElement.addEventListener('pointerdown', (e) => { isDragging = true; prevX = e.clientX; prevY = e.clientY; });
+window.addEventListener('pointerup', () => { isDragging = false; });
+window.addEventListener('pointermove', (e) => {
+  if (!isDragging) return;
+  const dx = e.clientX - prevX, dy = e.clientY - prevY;
+  theta -= dx * 0.006;
+  phi -= dy * 0.006;
+  phi = Math.max(0.3, Math.min(1.5, phi));
+  prevX = e.clientX; prevY = e.clientY;
+  updateCamera();
+});
+renderer.domElement.addEventListener('wheel', (e) => {
+  radius += e.deltaY * 0.01;
+  radius = Math.max(7, Math.min(26, radius));
+  updateCamera();
+  e.preventDefault();
+}, { passive: false });
+
+let t = 0;
+function animate() {
+  t += 0.015;
+  pod.position.y = Math.sin(t) * 0.08;
+  pod.rotation.y += 0.0022;
+
+  for (let i = 0; i < waterPos.count; i++) {
+    const x = waterPos.getX(i), y = waterPos.getY(i);
+    waterPos.setZ(i, 0.15 * Math.sin(x * 0.4 + t) * Math.cos(y * 0.3 + t * 0.7));
+  }
+  waterPos.needsUpdate = true;
+  waterGeo.computeVertexNormals();
+
+  renderer.render(scene, camera);
+  requestAnimationFrame(animate);
+}
+animate();
+
+window.addEventListener('resize', () => {
+  camera.aspect = wrap.clientWidth / wrap.clientHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(wrap.clientWidth, wrap.clientHeight);
+});
+</script>
+</body>
+</html>
